@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Management System — University of Malakand</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg-app: #080d1a;
+    --bg-sidebar: #0a0f1d;
+    --text-sidebar: #ffffff;
+    --bg-card: #12192c;
+    --border-color: rgba(255, 255, 255, 0.06);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.12);
+    --accent: #fbbf24;
+    --accent-light: rgba(251, 191, 36, 0.12);
+    --success: #10b981;
+    --success-light: rgba(16, 185, 129, 0.12);
+    --danger: #f87171;
+    --danger-light: rgba(248, 113, 113, 0.12);
+    --warning: #fbbf24;
+    --warning-light: rgba(251, 191, 36, 0.12);
+    --shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 10px 30px 0 rgba(0, 0, 0, 0.35);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --glass-bg: rgba(18, 25, 44, 0.75);
+    --glass-blur: blur(12px);
+    --input-bg: #1e293b;
+    --sidebar-w: 260px;
+  }
+  
+  body[data-theme="light"] {
+    --bg-app: #f8fafc;
+    --bg-sidebar: #0f172a;
+    --text-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --border-color: rgba(148, 163, 184, 0.12);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: rgba(79, 70, 229, 0.06);
+    --accent: #d97706;
+    --accent-light: rgba(217, 119, 6, 0.08);
+    --success: #10b981;
+    --success-light: rgba(16, 185, 129, 0.08);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.08);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.08);
+    --shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.06);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --input-bg: #f1f5f9;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+  
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg-app);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    font-size: 14px;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Sidebar Styling */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-sidebar);
+    color: var(--text-sidebar);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    border-right: 1px solid var(--border-color);
+  }
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .sidebar-logo .hotel-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.5px;
+  }
+  .sidebar-logo .hotel-name i {
+    color: var(--primary);
+    font-size: 20px;
+  }
+  .sidebar-logo .hotel-sub {
+    font-size: 11px;
+    color: #94a3b8;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+  .sidebar-logo .badge-uni {
+    font-size: 10px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: #818cf8;
+    padding: 3px 9px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .nav-section {
+    padding: 16px 0 8px;
+  }
+  .nav-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #64748b;
+    padding: 0 20px 8px;
+    font-weight: 700;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #94a3b8;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    font-weight: 500;
+  }
+  .nav-item:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .nav-item.active {
+    color: #ffffff;
+    background: rgba(99, 102, 241, 0.08);
+    border-left-color: var(--primary);
+    font-weight: 600;
+  }
+  .nav-item i {
+    font-size: 18px;
+  }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+  
+  /* Main Panel */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0; /* prevent overflow */
+  }
+  
+  /* Topbar */
+  .topbar {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 28px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .topbar-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .topbar-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 0 0 2px var(--bg-app), 0 0 0 4px var(--primary-light);
+  }
+  
+  /* Content Container */
+  .content {
+    padding: 28px;
+    flex: 1;
+  }
+  
+  /* Sections & Transitions */
+  .section {
+    display: none;
+  }
+  .section.active {
+    display: block;
+    animation: sectionFadeIn 0.35s ease forwards;
+  }
+  @keyframes sectionFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .page-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+  
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(99, 102, 241, 0.15);
+  }
+  .stat-card .stat-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover .stat-icon {
+    transform: scale(1.08);
+  }
+  .stat-card .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    margin-right: 48px;
+  }
+  .stat-card .stat-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .stat-card .stat-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  
+  .stat-card.s-blue .stat-icon { background: var(--primary-light); color: var(--primary); }
+  .stat-card.s-gold .stat-icon { background: var(--accent-light); color: var(--accent); }
+  .stat-card.s-green .stat-icon { background: var(--success-light); color: var(--success); }
+  .stat-card.s-red .stat-icon { background: var(--danger-light); color: var(--danger); }
+  
+  /* Charts Layout */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 768px) {
+    .chart-grid { grid-template-columns: 1fr; }
+  }
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+  }
+  .chart-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 20px;
+  }
+  
+  /* Tables & List Cards */
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .table-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+  }
+  thead tr {
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid var(--border-color);
+  }
+  body[data-theme="dark"] thead tr {
+    background: rgba(255, 255, 255, 0.01);
+  }
+  th {
+    padding: 12px 18px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+  td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: middle;
+    transition: background 0.15s ease;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  tr:hover td {
+    background: rgba(99, 102, 241, 0.02);
+  }
+  
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .badge-available { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+  .badge-occupied { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+  .badge-reserved { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+  .badge-maintenance { background: rgba(100, 116, 139, 0.1); color: #64748b; border-color: rgba(100, 116, 139, 0.2); }
+  .badge-paid { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+  .badge-unpaid { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+  .badge-checkedin { background: rgba(99, 102, 241, 0.1); color: #6366f1; border-color: rgba(99, 102, 241, 0.2); }
+  .badge-confirmed { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+  .badge-checkedout { background: rgba(100, 116, 139, 0.1); color: #64748b; border-color: rgba(100, 116, 139, 0.2); }
+  .badge-vip { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
+  .badge-regular { background: rgba(148, 163, 184, 0.1); color: #94a3b8; border-color: rgba(148, 163, 184, 0.2); }
+  
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    outline: none;
+  }
+  .btn:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+  }
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+    border-color: var(--primary-hover);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  }
+  .btn-success {
+    background: var(--success);
+    color: #ffffff;
+    border-color: var(--success);
+  }
+  .btn-success:hover {
+    background: #0d9488;
+    color: #ffffff;
+    border-color: #0d9488;
+  }
+  .btn-danger {
+    background: var(--danger);
+    color: #ffffff;
+    border-color: var(--danger);
+  }
+  .btn-danger:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+  }
+  .btn-secondary {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+  }
+  .btn-secondary:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  
+  /* Room Grid Card layout styling */
+  .room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .room-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 18px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .room-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: background 0.25s;
+  }
+  .room-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(99, 102, 241, 0.25);
+  }
+  
+  .room-card.available::before { background: #10b981; }
+  .room-card.occupied::before { background: #ef4444; }
+  .room-card.reserved::before { background: #f59e0b; }
+  .room-card.under-maintenance::before { background: #64748b; }
+  
+  .room-card .room-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+  .room-card .room-type {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .room-card .room-price {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  
+  /* Modals */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 13, 26, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open {
+    display: flex;
+    opacity: 1;
+    animation: fadeInBg 0.25s ease forwards;
+  }
+  .modal-overlay.open .modal {
+    animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  
+  @keyframes fadeInBg {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    width: 520px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+  }
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-header h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: color 0.15s;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .modal-close:hover {
+    background: var(--border-color);
+    color: var(--text-main);
+  }
+  .modal-body {
+    padding: 24px;
+  }
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  
+  /* Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    background: var(--input-bg);
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+  .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  /* Search & Filter Bar Container */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+  }
+  .search-bar i {
+    color: var(--text-muted);
+  }
+  .search-bar input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 13px;
+    width: 200px;
+    color: var(--text-main);
+    font-family: inherit;
+  }
+  
+  /* Toast Notifications */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .toast.success {
+    border-left: 4px solid #10b981;
+  }
+  .toast.danger {
+    border-left: 4px solid #ef4444;
+  }
+  .toast.success i { color: #10b981; }
+  .toast.danger i { color: #ef4444; }
+  
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  .loading-row {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+  }
+  
+  .mode-banner {
+    background: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mode-banner i {
+    color: var(--primary);
+    font-size: 16px;
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="hotel-name"><i class="ti ti-building-hotel"></i> Grand HMS</div>
+    <div class="hotel-sub">Hotel Management System</div>
+    <span class="badge-uni">University of Malakand</span>
+  </div>
+  <nav>
+    <div class="nav-section">
+      <div class="nav-label">Main</div>
+      <div class="nav-item active" onclick="showSection('dashboard',this)"><i class="ti ti-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="showSection('rooms',this)"><i class="ti ti-door"></i> Rooms</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Operations</div>
+      <div class="nav-item" onclick="showSection('guests',this)"><i class="ti ti-users"></i> Guests</div>
+      <div class="nav-item" onclick="showSection('bookings',this)"><i class="ti ti-calendar-check"></i> Bookings</div>
+      <div class="nav-item" onclick="showSection('payments',this)"><i class="ti ti-credit-card"></i> Payments</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Reports</div>
+      <div class="nav-item" onclick="showSection('reports',this)"><i class="ti ti-chart-bar"></i> Reports</div>
+      <div class="nav-item" onclick="showSection('staff',this)"><i class="ti ti-id-badge"></i> Staff</div>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    Group Leader: Usman Khan<br>
+    Dr. Shah Khalid · June 2026<br>
+    <span id="mode-indicator" style="color:var(--accent)">● Demo Mode</span>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="topbar-right">
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Theme" style="padding: 8px; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); background: transparent;">
+        <i class="ti ti-sun" id="theme-icon-light" style="display:none; font-size: 16px;"></i>
+        <i class="ti ti-moon" id="theme-icon-dark" style="font-size: 16px;"></i>
+      </button>
+      <span class="topbar-date" id="topbar-date"></span>
+      <div class="avatar">UK</div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Overview of hotel operations</div>
+      <div id="mode-banner-dash"></div>
+      <div class="stats-grid">
+        <div class="stat-card s-blue"><div class="stat-icon"><i class="ti ti-door"></i></div><div class="stat-label">Total Rooms</div><div class="stat-value" id="dash-rooms">—</div><div class="stat-sub" id="dash-rooms-sub">Loading...</div></div>
+        <div class="stat-card s-gold"><div class="stat-icon"><i class="ti ti-calendar-check"></i></div><div class="stat-label">Active Bookings</div><div class="stat-value" id="dash-bookings">—</div><div class="stat-sub">Confirmed + Checked-In</div></div>
+        <div class="stat-card s-green"><div class="stat-icon"><i class="ti ti-currency-rupee"></i></div><div class="stat-label">Total Revenue</div><div class="stat-value" id="dash-revenue">—</div><div class="stat-sub">Payments received</div></div>
+        <div class="stat-card s-red"><div class="stat-icon"><i class="ti ti-alert-circle"></i></div><div class="stat-label">Defaulters</div><div class="stat-value" id="dash-defaulters">—</div><div class="stat-sub">Outstanding balance</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3><i class="ti ti-chart-bar" style="color:var(--primary); margin-right:6px;"></i> Revenue by Room Class</h3>
+          <div style="position: relative; height: 160px; width: 100%;"><canvas id="revenueChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3><i class="ti ti-chart-pie" style="color:var(--success); margin-right:6px;"></i> Room Occupancy</h3>
+          <div class="donut-wrap" style="position: relative; height: 160px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 20px;">
+            <div style="width: 140px; height: 140px; position: relative;">
+              <canvas id="occupancyChart"></canvas>
+            </div>
+            <div class="donut-legend" id="donut-legend" style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="legend-item" style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
+                <div class="legend-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></div>
+                <span>Available: <strong id="legend-avail-val" style="color: var(--text-main)">0</strong></span>
+              </div>
+              <div class="legend-item" style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
+                <div class="legend-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></div>
+                <span>Occupied: <strong id="legend-occ-val" style="color: var(--text-main)">0</strong></span>
+              </div>
+              <div class="legend-item" style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
+                <div class="legend-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></div>
+                <span>Reserved: <strong id="legend-res-val" style="color: var(--text-main)">0</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Recent Bookings</h3></div>
+        <div class="table-wrap"><table id="dash-recent"><tbody><tr><td class="loading-row"><span class="spinner"></span> Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ROOMS -->
+    <div class="section" id="sec-rooms">
+      <div class="page-title">Rooms</div>
+      <div class="page-sub">Manage room availability, status, and details</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="search-bar"><i class="ti ti-search"></i><input type="text" id="room-search" placeholder="Search room..." oninput="filterRoomsLocal()"></div>
+        <select class="form-control" id="room-filter" style="width:160px;" onchange="filterRoomsLocal()">
+          <option value="">All Status</option><option>Available</option><option>Occupied</option><option>Reserved</option><option>Under Maintenance</option>
+        </select>
+        <button class="btn btn-primary" onclick="openAddRoom()"><i class="ti ti-plus"></i> Add Room</button>
+        <button class="btn btn-secondary" onclick="exportRoomsCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="room-grid" id="room-grid"><div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-muted)"><span class="spinner"></span> Loading rooms...</div></div>
+    </div>
+
+    <!-- GUESTS -->
+    <div class="section" id="sec-guests">
+      <div class="page-title">Guests</div>
+      <div class="page-sub">Guest records and profile management</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="search-bar"><i class="ti ti-search"></i><input type="text" id="guest-search" placeholder="Search guest..." oninput="filterGuestsLocal()"></div>
+        <button class="btn btn-primary" onclick="openAddGuest()"><i class="ti ti-plus"></i> Add Guest</button>
+        <button class="btn btn-secondary" onclick="exportGuestsCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="table-card"><div class="table-wrap"><table id="guest-table"><tbody><tr><td class="loading-row"><span class="spinner"></span></td></tr></tbody></table></div></div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="section" id="sec-bookings">
+      <div class="page-title">Bookings</div>
+      <div class="page-sub">Create and manage guest reservations</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="search-bar"><i class="ti ti-search"></i><input type="text" id="booking-search" placeholder="Search..." oninput="filterBookingsLocal()"></div>
+        <button class="btn btn-primary" onclick="openAddBooking()"><i class="ti ti-plus"></i> New Booking</button>
+        <button class="btn btn-secondary" onclick="exportBookingsCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="table-card"><div class="table-wrap"><table id="booking-table"><tbody><tr><td class="loading-row"><span class="spinner"></span></td></tr></tbody></table></div></div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="section" id="sec-payments">
+      <div class="page-title">Payments</div>
+      <div class="page-sub">Track invoices and payment transactions</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="openAddPayment()"><i class="ti ti-plus"></i> Record Payment</button>
+        <button class="btn btn-secondary" onclick="exportPaymentsCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="table-card"><div class="table-wrap"><table id="payment-table"><tbody><tr><td class="loading-row"><span class="spinner"></span></td></tr></tbody></table></div></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="section" id="sec-reports">
+      <div class="page-title">Reports</div>
+      <div class="page-sub">Occupancy, revenue, and defaulter analysis</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="exportRevenueCSV()"><i class="ti ti-download"></i> Export Revenue Report</button>
+        <button class="btn btn-secondary" onclick="exportDefaultersCSV()"><i class="ti ti-download"></i> Export Defaulters List</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;" id="report-cards"><div style="grid-column:1/-1" class="loading-row"><span class="spinner"></span></div></div>
+      <div class="table-card"><div class="table-header"><h3>Defaulter List — Outstanding Balances</h3></div><div class="table-wrap"><table id="defaulter-table"></table></div></div>
+      <div class="table-card" style="margin-top:14px"><div class="table-header"><h3>Add-on Revenue Summary</h3></div><div class="table-wrap"><table id="addon-table"></table></div></div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="section" id="sec-staff">
+      <div class="page-title">Staff</div>
+      <div class="page-sub">Hotel staff records and roles</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="openAddStaff()"><i class="ti ti-plus"></i> Add Staff</button>
+        <button class="btn btn-secondary" onclick="exportStaffCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="table-card"><div class="table-wrap"><table id="staff-table"><tbody><tr><td class="loading-row"><span class="spinner"></span></td></tr></tbody></table></div></div>
+    </div>
+
+  </div>
+</main>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h3 id="modal-title"></h3>
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close dialog">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" type="button" id="modal-save-btn" onclick="submitModal()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Done</span></div>
+
+<script>
+// ============================================================
+// CONFIG — change BACKEND_URL to match your Flask server
+// ============================================================
+const BACKEND_URL = "http://localhost:5000/api";
+let USE_BACKEND = false;   // auto-detected on load
+let currentModal = null;
+let cachedRooms = [], cachedGuests = [], cachedBookings = [], cachedPayments = [], cachedStaff = [];
+let cachedRevenueReport = [], cachedDefaultersReport = [], cachedAddonReport = [];
+
+let revenueChartInstance = null;
+let occupancyChartInstance = null;
+
+// ============================================================
+// API LAYER — tries Flask first, falls back to demo data
+// ============================================================
+async function apiGet(path) {
+  const res = await fetch(BACKEND_URL + path);
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+async function apiPost(path, body) {
+  const res = await fetch(BACKEND_URL + path, {
+    method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await apiErrorMessage(res));
+  return res.json();
+}
+async function apiPut(path, body) {
+  const res = await fetch(BACKEND_URL + path, {
+    method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body||{})
+  });
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+async function apiDelete(path) {
+  const res = await fetch(BACKEND_URL + path, { method: "DELETE" });
+  if (!res.ok) throw new Error(await apiErrorMessage(res));
+  return res.json();
+}
+
+async function apiErrorMessage(response) {
+  try {
+    const body = await response.json();
+    if (body.error) return body.error;
+  } catch {}
+  return `Request failed (${response.status})`;
+}
+
+// ============================================================
+// DEMO DATA (used when Flask is not running)
+// ============================================================
+const demo = {
+  rooms: [
+    {room_id:1,room_number:'101',floor_number:1,class_name:'Standard',nightly_rate:5000,status:'Available',smoking:false,view_type:'Garden',wheelchair_access:false},
+    {room_id:2,room_number:'102',floor_number:1,class_name:'Standard',nightly_rate:5000,status:'Available',smoking:false,view_type:'Garden',wheelchair_access:false},
+    {room_id:3,room_number:'201',floor_number:2,class_name:'Deluxe',nightly_rate:8000,status:'Available',smoking:false,view_type:'City',wheelchair_access:false},
+    {room_id:4,room_number:'202',floor_number:2,class_name:'Deluxe',nightly_rate:8000,status:'Occupied',smoking:false,view_type:'City',wheelchair_access:false},
+    {room_id:5,room_number:'301',floor_number:3,class_name:'Suite',nightly_rate:15000,status:'Available',smoking:false,view_type:'Sea',wheelchair_access:false},
+    {room_id:6,room_number:'302',floor_number:3,class_name:'Suite',nightly_rate:15000,status:'Reserved',smoking:false,view_type:'Sea',wheelchair_access:false},
+    {room_id:7,room_number:'401',floor_number:4,class_name:'Executive',nightly_rate:12000,status:'Available',smoking:false,view_type:'Mountain',wheelchair_access:true},
+    {room_id:8,room_number:'103',floor_number:1,class_name:'Standard',nightly_rate:5000,status:'Available',smoking:true,view_type:'Garden',wheelchair_access:false},
+  ],
+  guests: [
+    {person_id:1,name:'Ali Khan',email:'ali.khan@email.com',city:'Peshawar',guest_type:'Regular',loyalty_points:150},
+    {person_id:2,name:'Sara Ahmed',email:'sara.ahmed@email.com',city:'Islamabad',guest_type:'VIP',loyalty_points:500},
+    {person_id:3,name:'Usman Shah',email:'usman.shah@email.com',city:'Lahore',guest_type:'Regular',loyalty_points:0},
+    {person_id:4,name:'Maria Iqbal',email:'maria.iqbal@email.com',city:'Karachi',guest_type:'Regular',loyalty_points:300},
+  ],
+  bookings: [
+    {booking_id:1,guest_name:'Ali Khan',guest_type:'Regular',booking_date:'2026-06-01',checkin_date:'2026-06-02',checkout_date:'2026-06-06',room_class:'Deluxe',num_adults:2,num_children:0,booking_status:'Checked-In',total_amount:52000,amount_paid:25000,invoice_id:1,invoice_status:'Partially Paid',nights_stayed:4,room_cost:32000},
+    {booking_id:2,guest_name:'Sara Ahmed',guest_type:'VIP',booking_date:'2026-06-05',checkin_date:'2026-06-06',checkout_date:'2026-06-10',room_class:'Suite',num_adults:1,num_children:1,booking_status:'Confirmed',total_amount:63500,amount_paid:0,invoice_id:2,invoice_status:'Unpaid',nights_stayed:4,room_cost:60000},
+    {booking_id:3,guest_name:'Usman Shah',guest_type:'Regular',booking_date:'2026-06-10',checkin_date:'2026-06-11',checkout_date:'2026-06-14',room_class:'Standard',num_adults:2,num_children:2,booking_status:'Confirmed',total_amount:15000,amount_paid:0,invoice_id:3,invoice_status:'Unpaid',nights_stayed:3,room_cost:15000},
+    {booking_id:4,guest_name:'Maria Iqbal',guest_type:'Regular',booking_date:'2026-05-20',checkin_date:'2026-05-21',checkout_date:'2026-05-25',room_class:'Deluxe',num_adults:2,num_children:0,booking_status:'Checked-Out',total_amount:40000,amount_paid:40000,invoice_id:4,invoice_status:'Paid',nights_stayed:4,room_cost:32000},
+  ],
+  payments: [
+    {payment_id:1,guest_name:'Maria Iqbal',payment_date:'2026-05-25',amount:40000,payment_method:'Credit Card',status:'Completed',invoice_id:4,total_amount:40000},
+    {payment_id:2,guest_name:'Ali Khan',payment_date:'2026-06-03',amount:25000,payment_method:'Cash',status:'Completed',invoice_id:1,total_amount:52000},
+  ],
+  staff: [
+    {person_id:5,name:'Hamza Ali',email:'hamza.ali@hotel.com',position:'Receptionist',salary:45000,hire_date:'2022-01-15'},
+  ]
+};
+let nextDemoId = {room:9,guest:5,booking:5,payment:3,staff:10};
+
+// ============================================================
+// DETECT BACKEND
+// ============================================================
+async function detectBackend() {
+  try {
+    const response = await fetch(BACKEND_URL + "/dashboard", {signal: AbortSignal.timeout(2000)});
+    if (!response.ok) throw new Error(`Backend health check failed: ${response.status}`);
+    USE_BACKEND = true;
+    document.getElementById('mode-indicator').textContent = '● Live (MySQL)';
+    document.getElementById('mode-indicator').style.color = '#10b981';
+    showBanner('Connected to Flask + MySQL backend', 'success');
+  } catch {
+    USE_BACKEND = false;
+    document.getElementById('mode-indicator').textContent = '● Demo Mode';
+  }
+}
+
+function showBanner(msg, type) {
+  const b = document.getElementById('mode-banner-dash');
+  if (b) b.innerHTML = `<div class="mode-banner"><i class="ti ti-${type==='success'?'circle-check':'info-circle'}"></i> ${msg}</div>`;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {dashboard:'Dashboard',rooms:'Rooms',guests:'Guests',bookings:'Bookings',payments:'Payments',reports:'Reports',staff:'Staff'};
+  document.getElementById('topbar-title').textContent = titles[id];
+  renderSection(id);
+}
+function renderSection(id) {
+  if(id==='dashboard') renderDashboard();
+  else if(id==='rooms') renderRooms();
+  else if(id==='guests') renderGuests();
+  else if(id==='bookings') renderBookings();
+  else if(id==='payments') renderPayments();
+  else if(id==='reports') renderReports();
+  else if(id==='staff') renderStaff();
+}
+
+// ============================================================
+// CHARTS RENDER (Chart.js)
+// ============================================================
+function renderCharts(revenueData = {}, occupancyData = {}) {
+  const isDark = (document.body.getAttribute('data-theme') || 'dark') === 'dark';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.05)';
+  const textColor = isDark ? '#94a3b8' : '#64748b';
+  
+  // 1. Revenue Chart
+  const revCtx = document.getElementById('revenueChart');
+  if (revCtx) {
+    if (revenueChartInstance) revenueChartInstance.destroy();
+    
+    const ctx2d = revCtx.getContext('2d');
+    const grad = ctx2d.createLinearGradient(0, 0, 0, 160);
+    if (isDark) {
+      grad.addColorStop(0, '#818cf8'); 
+      grad.addColorStop(1, '#4f46e5'); 
+    } else {
+      grad.addColorStop(0, '#4f46e5');
+      grad.addColorStop(1, '#312e81');
+    }
+    
+    revenueChartInstance = new Chart(revCtx, {
+      type: 'bar',
+      data: {
+        labels: revenueData.labels || ['Standard','Deluxe','Suite','Executive'],
+        datasets: [{
+          label: 'Revenue (₨)',
+          data: revenueData.values || [0, 0, 0, 0],
+          backgroundColor: grad,
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: isDark ? '#12192c' : '#ffffff',
+            titleColor: isDark ? '#f1f5f9' : '#0f172a',
+            bodyColor: isDark ? '#94a3b8' : '#64748b',
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.1)',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                return '₨ ' + context.raw.toLocaleString();
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 10 } }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              font: { family: 'Plus Jakarta Sans', size: 10 },
+              callback: function(value) { return '₨' + (value/1000) + 'K'; }
+            }
+          }
+        }
+      }
+    });
+  }
+  
+  // 2. Occupancy Chart
+  const occCtx = document.getElementById('occupancyChart');
+  if (occCtx) {
+    if (occupancyChartInstance) occupancyChartInstance.destroy();
+    
+    const occColors = ['#10b981', '#ef4444', '#f59e0b']; 
+    
+    occupancyChartInstance = new Chart(occCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Available', 'Occupied', 'Reserved'],
+        datasets: [{
+          data: [occupancyData.available || 0, occupancyData.occupied || 0, occupancyData.reserved || 0],
+          backgroundColor: occColors,
+          borderWidth: isDark ? 2 : 1,
+          borderColor: isDark ? '#12192c' : '#ffffff',
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: isDark ? '#12192c' : '#ffffff',
+            titleColor: isDark ? '#f1f5f9' : '#0f172a',
+            bodyColor: isDark ? '#94a3b8' : '#64748b',
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.1)',
+            borderWidth: 1
+          }
+        }
+      }
+    });
+  }
+}
+
+// ============================================================
+// THEME SWITCHER
+// ============================================================
+function toggleTheme() {
+  const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', newTheme);
+  localStorage.setItem('hms-theme', newTheme);
+  updateThemeIcon(newTheme);
+  
+  if (document.getElementById('sec-dashboard').classList.contains('active')) {
+    renderDashboard();
+  }
+}
+
+function updateThemeIcon(theme) {
+  const lightIcon = document.getElementById('theme-icon-light');
+  const darkIcon = document.getElementById('theme-icon-dark');
+  if (theme === 'dark') {
+    lightIcon.style.display = 'none';
+    darkIcon.style.display = 'block';
+  } else {
+    lightIcon.style.display = 'block';
+    darkIcon.style.display = 'none';
+  }
+}
+
+// ============================================================
+// CSV EXPORT ENGINE
+// ============================================================
+function convertToCSV(headers, rows) {
+  return [
+    headers.join(','),
+    ...rows.map(row => row.map(val => {
+      let clean = String(val === null || val === undefined ? '' : val).replace(/"/g, '""');
+      if (clean.includes(',') || clean.includes('\n') || clean.includes('"')) {
+        clean = `"${clean}"`;
+      }
+      return clean;
+    }).join(','))
+  ].join('\n');
+}
+
+function triggerCSVDownload(csvContent, filename) {
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function exportRoomsCSV() {
+  if (!cachedRooms || cachedRooms.length === 0) {
+    toast('No rooms data available to export', 'danger');
+    return;
+  }
+  const headers = ['Room ID', 'Room Number', 'Floor Number', 'Class Name', 'Nightly Rate (₨)', 'Status', 'Smoking Allowed', 'View Type', 'Wheelchair Access'];
+  const rows = cachedRooms.map(r => [
+    r.room_id,
+    r.room_number,
+    r.floor_number,
+    r.class_name,
+    r.nightly_rate,
+    r.status,
+    r.smoking ? 'Yes' : 'No',
+    r.view_type || 'N/A',
+    r.wheelchair_access ? 'Yes' : 'No'
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_rooms_list.csv');
+  toast('Rooms exported to CSV');
+}
+
+function exportGuestsCSV() {
+  if (!cachedGuests || cachedGuests.length === 0) {
+    toast('No guests data available to export', 'danger');
+    return;
+  }
+  const headers = ['Guest ID', 'Full Name', 'Email', 'City', 'Guest Type', 'Loyalty Points'];
+  const rows = cachedGuests.map(g => [
+    g.person_id,
+    g.name,
+    g.email,
+    g.city || 'N/A',
+    g.guest_type,
+    g.loyalty_points
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_guests_list.csv');
+  toast('Guests exported to CSV');
+}
+
+function exportBookingsCSV() {
+  if (!cachedBookings || cachedBookings.length === 0) {
+    toast('No bookings data available to export', 'danger');
+    return;
+  }
+  const headers = ['Booking ID', 'Guest Name', 'Guest Type', 'Booking Date', 'Room Class', 'Check-in Date', 'Check-out Date', 'Nights Stayed', 'Status', 'Invoice Total (₨)', 'Amount Paid (₨)', 'Balance Due (₨)', 'Invoice ID', 'Invoice Status'];
+  const rows = cachedBookings.map(b => [
+    b.booking_id,
+    b.guest_name,
+    b.guest_type,
+    b.booking_date,
+    b.room_class,
+    b.checkin_date,
+    b.checkout_date,
+    b.nights_stayed || 0,
+    b.booking_status,
+    b.total_amount || 0,
+    b.amount_paid || 0,
+    (b.total_amount || 0) - (b.amount_paid || 0),
+    b.invoice_id || 'N/A',
+    b.invoice_status || 'N/A'
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_bookings_list.csv');
+  toast('Bookings exported to CSV');
+}
+
+function exportPaymentsCSV() {
+  if (!cachedPayments || cachedPayments.length === 0) {
+    toast('No payments data available to export', 'danger');
+    return;
+  }
+  const headers = ['Payment ID', 'Guest Name', 'Payment Date', 'Amount Paid (₨)', 'Payment Method', 'Invoice ID', 'Total Invoice Amount (₨)', 'Status'];
+  const rows = cachedPayments.map(p => [
+    p.payment_id,
+    p.guest_name,
+    p.payment_date,
+    p.amount,
+    p.payment_method,
+    p.invoice_id,
+    p.total_amount,
+    p.status
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_payments_list.csv');
+  toast('Payments exported to CSV');
+}
+
+function exportStaffCSV() {
+  if (!cachedStaff || cachedStaff.length === 0) {
+    toast('No staff data available to export', 'danger');
+    return;
+  }
+  const headers = ['Staff ID', 'Full Name', 'Email', 'Position', 'Salary (₨)', 'Hire Date'];
+  const rows = cachedStaff.map(s => [
+    s.person_id,
+    s.name,
+    s.email,
+    s.position,
+    s.salary,
+    s.hire_date
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_staff_list.csv');
+  toast('Staff exported to CSV');
+}
+
+function exportRevenueCSV() {
+  if (!cachedRevenueReport || cachedRevenueReport.length === 0) {
+    toast('No revenue report data available', 'danger');
+    return;
+  }
+  const headers = ['Room Class', 'Total Bookings', 'Total Nights Stayed', 'Room Revenue (₨)'];
+  const rows = cachedRevenueReport.map(r => [
+    r.class_name,
+    r.total_bookings,
+    r.total_nights || 0,
+    r.room_revenue
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_revenue_report.csv');
+  toast('Revenue Report exported to CSV');
+}
+
+function exportDefaultersCSV() {
+  if (!cachedDefaultersReport || cachedDefaultersReport.length === 0) {
+    toast('No defaulters report data available', 'danger');
+    return;
+  }
+  const headers = ['Guest Name', 'Booking ID', 'Invoice Total (₨)', 'Amount Paid (₨)', 'Outstanding Balance (₨)', 'Due Date'];
+  const rows = cachedDefaultersReport.map(d => [
+    d.guest_name,
+    d.booking_id,
+    d.total_amount,
+    d.amount_paid,
+    d.outstanding_balance,
+    d.due_date
+  ]);
+  const csv = convertToCSV(headers, rows);
+  triggerCSVDownload(csv, 'hms_defaulters_report.csv');
+  toast('Defaulters list exported to CSV');
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function renderDashboard() {
+  let data;
+  if (USE_BACKEND) {
+    try { data = await apiGet('/dashboard'); } catch { USE_BACKEND = false; }
+  }
+  if (!data) {
+    const totalPaid = demo.payments.reduce((s,p)=>s+p.amount,0);
+    const defaulters = demo.bookings.filter(b=>b.booking_status==='Checked-Out'&&b.amount_paid<b.total_amount);
+    data = { total_rooms: demo.rooms.length, available_rooms: demo.rooms.filter(r=>r.status==='Available').length, occupied_rooms: demo.rooms.filter(r=>r.status==='Occupied').length, active_bookings: demo.bookings.filter(b=>['Confirmed','Checked-In'].includes(b.booking_status)).length, total_revenue: totalPaid, defaulter_count: defaulters.length };
+  }
+
+  document.getElementById('dash-rooms').textContent = data.total_rooms;
+  document.getElementById('dash-rooms-sub').textContent = `${data.available_rooms} available · ${data.occupied_rooms} occupied`;
+  document.getElementById('dash-revenue').textContent = '₨'+(data.total_revenue/1000).toFixed(0)+'K';
+  document.getElementById('dash-bookings').textContent = data.active_bookings;
+  document.getElementById('dash-defaulters').textContent = data.defaulter_count;
+
+  // Prepare revenue chart
+  const bookings = USE_BACKEND ? (await apiGet('/bookings').catch(()=>demo.bookings)) : demo.bookings;
+  const classes = ['Standard','Deluxe','Suite','Executive'];
+  const revs = classes.map(c => bookings.filter(b=>b.room_class===c).reduce((s,b)=>s+Number(b.total_amount||0),0));
+  
+  // Prepare room occupancy details
+  const rooms = USE_BACKEND ? (await apiGet('/rooms').catch(()=>demo.rooms)) : demo.rooms;
+  const roomStatuses = { Available: 0, Occupied: 0, Reserved: 0 };
+  rooms.forEach(r => {
+    if (roomStatuses[r.status] !== undefined) {
+      roomStatuses[r.status]++;
+    }
+  });
+  
+  const occData = {
+    available: roomStatuses['Available'] || 0,
+    occupied: roomStatuses['Occupied'] || 0,
+    reserved: roomStatuses['Reserved'] || 0
+  };
+  
+  // Set legend label counts
+  document.getElementById('legend-avail-val').textContent = occData.available;
+  document.getElementById('legend-occ-val').textContent = occData.occupied;
+  document.getElementById('legend-res-val').textContent = occData.reserved;
+
+  // Draw Charts
+  renderCharts({ labels: classes, values: revs }, occData);
+
+  // Recent bookings
+  const recent = bookings.slice(0,4);
+  document.getElementById('dash-recent').innerHTML = `<thead><tr><th>Booking ID</th><th>Guest</th><th>Room Class</th><th>Check-in</th><th>Check-out</th><th>Status</th><th>Invoice</th></tr></thead><tbody>`+
+    recent.map(b=>`<tr><td><strong>#B${String(b.booking_id).padStart(3,'0')}</strong></td><td>${b.guest_name}</td><td>${b.room_class}</td><td>${b.checkin_date}</td><td>${b.checkout_date}</td><td>${statusBadge(b.booking_status)}</td><td>₨${Number(b.total_amount).toLocaleString()}</td></tr>`).join('')+`</tbody>`;
+}
+
+// ============================================================
+// ROOMS
+// ============================================================
+async function renderRooms() {
+  if (USE_BACKEND) {
+    try { cachedRooms = await apiGet('/rooms'); } catch { cachedRooms = demo.rooms; }
+  } else { cachedRooms = [...demo.rooms]; }
+  displayRooms(cachedRooms);
+}
+
+function displayRooms(rooms) {
+  document.getElementById('room-grid').innerHTML = rooms.length ? rooms.map(r=>`
+    <div class="room-card ${r.status.toLowerCase().replace(/ /g,'-')}">
+      <div class="room-num">🚪 ${r.room_number}</div>
+      <div class="room-type">${r.class_name} · Floor ${r.floor_number}</div>
+      <div>${statusBadge(r.status)}</div>
+      <div class="room-price" style="margin-top:8px;">₨${Number(r.nightly_rate).toLocaleString()}/night</div>
+      <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
+        ${r.wheelchair_access?'<span class="badge badge-confirmed" style="font-size:10px;">♿</span>':''}
+        ${r.smoking?'<span class="badge badge-maintenance" style="font-size:10px;">🚬</span>':''}
+        <span class="badge badge-maintenance" style="font-size:10px;">${r.view_type||''}</span>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:5px;">
+        <button class="btn btn-sm btn-danger" onclick="deleteRoomAction(${r.room_id})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('') : '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-muted)">No rooms found</div>';
+}
+
+function filterRoomsLocal() {
+  const q = document.getElementById('room-search').value.toLowerCase();
+  const s = document.getElementById('room-filter').value;
+  displayRooms(cachedRooms.filter(r=>(r.room_number.includes(q)||r.class_name.toLowerCase().includes(q))&&(!s||r.status===s)));
+}
+
+async function deleteRoomAction(id) {
+  if(!confirm('Delete this room?')) return;
+  if(USE_BACKEND){try{await apiDelete('/rooms/'+id);}catch(e){toast('Error: '+e.message,'danger');return;}}
+  else { demo.rooms = demo.rooms.filter(r=>r.room_id!==id); }
+  renderRooms(); toast('Room deleted','danger');
+}
+
+function openAddRoom() {
+  currentModal = 'add-room';
+  document.getElementById('modal-title').textContent = 'Add New Room';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row"><div class="form-group"><label class="form-label">Room Number</label><input class="form-control" id="m-rnum" placeholder="e.g. 105"></div>
+    <div class="form-group"><label class="form-label">Floor</label><input class="form-control" id="m-rfloor" type="number" value="1" min="1"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Room Class</label><select class="form-control" id="m-rclass"><option>Standard</option><option>Deluxe</option><option>Suite</option><option>Executive</option></select></div>
+    <div class="form-group"><label class="form-label">Status</label><select class="form-control" id="m-rstatus"><option>Available</option><option>Occupied</option><option>Reserved</option><option>Under Maintenance</option></select></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">View Type</label><input class="form-control" id="m-rview" value="Garden"></div>
+    <div class="form-group"><label class="form-label">Nightly Rate (₨)</label><input class="form-control" id="m-rprice" type="number" value="5000"></div></div>
+    <div style="display:flex;gap:20px;margin-top:4px;">
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="checkbox" id="m-rsmoke"> Smoking</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="checkbox" id="m-rwheel"> Wheelchair</label>
+    </div>`;
+  openModal();
+}
+
+// ============================================================
+// GUESTS
+// ============================================================
+async function renderGuests() {
+  if(USE_BACKEND){try{cachedGuests=await apiGet('/guests');}catch{cachedGuests=demo.guests;}}
+  else{cachedGuests=[...demo.guests];}
+  displayGuests(cachedGuests);
+}
+
+function displayGuests(guests) {
+  const t = document.getElementById('guest-table');
+  t.innerHTML = `<thead><tr><th>ID</th><th>Name</th><th>Email</th><th>City</th><th>Type</th><th>Points</th><th>Actions</th></tr></thead><tbody>`+
+    guests.map(g=>`<tr>
+      <td>#G${String(g.person_id).padStart(3,'0')}</td>
+      <td><strong>${g.name}</strong></td><td>${g.email}</td><td>${g.city||'—'}</td>
+      <td>${statusBadge(g.guest_type)}</td><td>${g.loyalty_points} pts</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteGuestAction(${g.person_id})"><i class="ti ti-trash"></i></button></td>
+    </tr>`).join('')+`</tbody>`;
+}
+
+function filterGuestsLocal() {
+  const q = document.getElementById('guest-search').value.toLowerCase();
+  displayGuests(cachedGuests.filter(g=>g.name.toLowerCase().includes(q)||g.email.toLowerCase().includes(q)));
+}
+
+async function deleteGuestAction(id) {
+  if(!confirm('Delete this guest?')) return;
+  if(USE_BACKEND){try{await apiDelete('/guests/'+id);}catch(e){toast(e.message,'danger');return;}}
+  else{demo.guests=demo.guests.filter(g=>g.person_id!==id);}
+  renderGuests(); toast('Guest deleted','danger');
+}
+
+function openAddGuest() {
+  currentModal='add-guest';
+  document.getElementById('modal-title').textContent='Add New Guest';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-control" id="m-gname" placeholder="Ahmed Ali"></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="m-gemail" placeholder="email@example.com"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">City</label><input class="form-control" id="m-gcity" placeholder="Peshawar"></div>
+    <div class="form-group"><label class="form-label">Type</label><select class="form-control" id="m-gtype"><option>Regular</option><option>VIP</option></select></div></div>`;
+  openModal();
+}
+
+// ============================================================
+// BOOKINGS
+// ============================================================
+async function renderBookings() {
+  if(USE_BACKEND){try{cachedBookings=await apiGet('/bookings');}catch{cachedBookings=demo.bookings;}}
+  else{cachedBookings=[...demo.bookings];}
+  displayBookings(cachedBookings);
+}
+
+function displayBookings(bookings) {
+  const t = document.getElementById('booking-table');
+  t.innerHTML=`<thead><tr><th>ID</th><th>Guest</th><th>Class</th><th>Check-in</th><th>Check-out</th><th>Nights</th><th>Status</th><th>Invoice</th><th>Balance</th><th>Actions</th></tr></thead><tbody>`+
+    bookings.map(b=>`<tr>
+      <td><strong>#B${String(b.booking_id).padStart(3,'0')}</strong></td>
+      <td>${b.guest_name}</td><td>${b.room_class}</td>
+      <td>${b.checkin_date}</td><td>${b.checkout_date}</td><td>${b.nights_stayed||'—'}</td>
+      <td>${statusBadge(b.booking_status)}</td>
+      <td>₨${Number(b.total_amount||0).toLocaleString()}</td>
+      <td>${Number(b.amount_paid)>=Number(b.total_amount)?`<span class="badge badge-paid">Paid</span>`:`<span class="badge badge-unpaid">₨${(Number(b.total_amount)-Number(b.amount_paid)).toLocaleString()} due</span>`}</td>
+      <td style="display:flex;gap:4px;">
+        <button class="btn btn-sm btn-success" onclick="checkinAction(${b.booking_id})" title="Check In"><i class="ti ti-door-enter"></i></button>
+        <button class="btn btn-sm" onclick="checkoutAction(${b.booking_id})" title="Check Out"><i class="ti ti-door-exit"></i></button>
+      </td>
+    </tr>`).join('')+`</tbody>`;
+}
+
+function filterBookingsLocal() {
+  const q = document.getElementById('booking-search').value.toLowerCase();
+  displayBookings(cachedBookings.filter(b=>b.guest_name.toLowerCase().includes(q)||b.room_class.toLowerCase().includes(q)||b.booking_status.toLowerCase().includes(q)));
+}
+
+async function checkinAction(id) {
+  if(USE_BACKEND){try{await apiPut('/bookings/'+id+'/checkin');}catch(e){toast('Error','danger');return;}}
+  else{const b=demo.bookings.find(x=>x.booking_id===id);if(b)b.booking_status='Checked-In';}
+  renderBookings(); toast('Guest checked in');
+}
+async function checkoutAction(id) {
+  if(USE_BACKEND){try{await apiPut('/bookings/'+id+'/checkout');}catch(e){toast('Error','danger');return;}}
+  else{const b=demo.bookings.find(x=>x.booking_id===id);if(b)b.booking_status='Checked-Out';}
+  renderBookings(); toast('Guest checked out');
+}
+
+function openAddBooking() {
+  currentModal='add-booking';
+  document.getElementById('modal-title').textContent='New Booking';
+  const guests = USE_BACKEND ? cachedGuests : demo.guests;
+  const guestOpts = guests.map(g=>`<option value="${g.person_id}">${g.name}</option>`).join('');
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-group"><label class="form-label">Guest</label><select class="form-control" id="m-bgid">${guestOpts}</select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Room Class</label><select class="form-control" id="m-bclass"><option>Standard</option><option>Deluxe</option><option>Suite</option><option>Executive</option></select></div>
+    <div class="form-group"><label class="form-label">Adults</label><input class="form-control" type="number" id="m-badults" value="2" min="1"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Check-in</label><input class="form-control" type="date" id="m-bcin"></div>
+    <div class="form-group"><label class="form-label">Check-out</label><input class="form-control" type="date" id="m-bcout"></div></div>`;
+  // Set default dates
+  const today = new Date().toISOString().slice(0,10);
+  const next3 = new Date(Date.now()+3*86400000).toISOString().slice(0,10);
+  setTimeout(()=>{document.getElementById('m-bcin').value=today; document.getElementById('m-bcout').value=next3;},10);
+  openModal();
+}
+
+// ============================================================
+// PAYMENTS
+// ============================================================
+async function renderPayments() {
+  if(USE_BACKEND){try{cachedPayments=await apiGet('/payments');}catch{cachedPayments=demo.payments;}}
+  else{cachedPayments=[...demo.payments];}
+  const t = document.getElementById('payment-table');
+  t.innerHTML=`<thead><tr><th>ID</th><th>Guest</th><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead><tbody>`+
+    cachedPayments.map(p=>`<tr>
+      <td>#P${String(p.payment_id).padStart(3,'0')}</td>
+      <td>${p.guest_name}</td><td>${p.payment_date}</td>
+      <td><strong>₨${Number(p.amount).toLocaleString()}</strong></td>
+      <td>${p.payment_method}</td>
+      <td><span class="badge badge-paid">${p.status}</span></td>
+    </tr>`).join('')+`</tbody>`;
+}
+
+function openAddPayment() {
+  currentModal='add-payment';
+  document.getElementById('modal-title').textContent='Record Payment';
+  const guests = USE_BACKEND ? cachedGuests : demo.guests;
+  const bookings = USE_BACKEND ? cachedBookings : demo.bookings;
+  const guestOpts = guests.map(g=>`<option value="${g.person_id}">${g.name}</option>`).join('');
+  const invoiceOpts = bookings.filter(b=>b.invoice_id).map(b=>`<option value="${b.invoice_id}">Invoice #${b.invoice_id} — ${b.guest_name} (₨${Number(b.total_amount).toLocaleString()})</option>`).join('');
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-group"><label class="form-label">Invoice</label><select class="form-control" id="m-pinvid">${invoiceOpts}</select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Amount (₨)</label><input class="form-control" type="number" id="m-pamount" placeholder="15000"></div>
+    <div class="form-group"><label class="form-label">Method</label><select class="form-control" id="m-pmethod"><option>Cash</option><option>Credit Card</option><option>Debit Card</option><option>Bank Transfer</option><option>Online</option></select></div></div>`;
+  openModal();
+}
+
+// ============================================================
+// REPORTS
+// ============================================================
+async function renderReports() {
+  let revenue=[], defaulters=[], addons=[];
+  if(USE_BACKEND){
+    try{[revenue,defaulters,addons]=await Promise.all([apiGet('/reports/revenue'),apiGet('/reports/defaulters'),apiGet('/reports/addon-revenue')]);}
+    catch{/* fall through to demo */}
+  }
+  // Demo fallback
+  if(!revenue.length) {
+    const bk = demo.bookings;
+    ['Standard','Deluxe','Suite','Executive'].forEach(c=>{
+      const matching=bk.filter(b=>b.room_class===c);
+      if(matching.length) revenue.push({class_name:c,total_bookings:matching.length,total_nights:matching.reduce((s,b)=>s+(b.nights_stayed||0),0),room_revenue:matching.reduce((s,b)=>s+b.total_amount,0)});
+    });
+    defaulters=bk.filter(b=>b.booking_status==='Checked-Out'&&b.amount_paid<b.total_amount).map(b=>({guest_name:b.guest_name,booking_id:b.booking_id,invoice_id:b.invoice_id,total_amount:b.total_amount,amount_paid:b.amount_paid,outstanding_balance:b.total_amount-b.amount_paid,due_date:b.checkout_date}));
+    addons=[{addon_name:'Breakfast',total_units_sold:8,total_addon_revenue:6400},{addon_name:'Spa Package',total_units_sold:1,total_addon_revenue:3000},{addon_name:'Airport Transfer',total_units_sold:1,total_addon_revenue:1500}];
+  }
+  cachedRevenueReport = revenue;
+  cachedDefaultersReport = defaulters;
+  cachedAddonReport = addons;
+
+  document.getElementById('report-cards').innerHTML=revenue.map(r=>`
+    <div class="stat-card s-blue">
+      <div class="stat-label">${r.class_name}</div>
+      <div class="stat-value">₨${Number(r.room_revenue).toLocaleString()}</div>
+      <div class="stat-sub">${r.total_bookings} bookings · ${r.total_nights||0} nights</div>
+    </div>`).join('');
+  document.getElementById('defaulter-table').innerHTML=`<thead><tr><th>Guest</th><th>Booking</th><th>Invoice Total</th><th>Paid</th><th>Outstanding</th><th>Due Date</th></tr></thead><tbody>`+
+    (defaulters.length?defaulters.map(d=>`<tr><td>${d.guest_name}</td><td>#B${String(d.booking_id).padStart(3,'0')}</td><td>₨${Number(d.total_amount).toLocaleString()}</td><td>₨${Number(d.amount_paid).toLocaleString()}</td><td><strong style="color:var(--danger)">₨${Number(d.outstanding_balance).toLocaleString()}</strong></td><td>${d.due_date}</td></tr>`).join(''):`<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted)">No defaulters ✓</td></tr>`)+`</tbody>`;
+  document.getElementById('addon-table').innerHTML=`<thead><tr><th>Service</th><th>Units Sold</th><th>Revenue</th></tr></thead><tbody>`+
+    addons.map(a=>`<tr><td>${a.addon_name}</td><td>${a.total_units_sold}</td><td>₨${Number(a.total_addon_revenue).toLocaleString()}</td></tr>`).join('')+`</tbody>`;
+}
+
+// ============================================================
+// STAFF
+// ============================================================
+async function renderStaff() {
+  if(USE_BACKEND){try{cachedStaff=await apiGet('/staff');}catch{cachedStaff=demo.staff;}}
+  else{cachedStaff=[...demo.staff];}
+  document.getElementById('staff-table').innerHTML=`<thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Position</th><th>Salary</th><th>Hire Date</th><th>Actions</th></tr></thead><tbody>`+
+    cachedStaff.map(s=>`<tr><td>#S${String(s.person_id).padStart(3,'0')}</td><td><strong>${s.name}</strong></td><td>${s.email}</td><td>${s.position}</td><td>₨${Number(s.salary).toLocaleString()}</td><td>${s.hire_date}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteStaffAction(${s.person_id})"><i class="ti ti-trash"></i></button></td>
+    </tr>`).join('')+`</tbody>`;
+}
+
+function openAddStaff() {
+  currentModal='add-staff';
+  document.getElementById('modal-title').textContent='Add Staff Member';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-control" id="m-sname" placeholder="Name"></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="m-semail" placeholder="email@hotel.com"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Position</label><select class="form-control" id="m-spos"><option>Receptionist</option><option>Manager</option><option>Housekeeping</option><option>Chef</option><option>Security</option></select></div>
+    <div class="form-group"><label class="form-label">Salary (₨)</label><input class="form-control" type="number" id="m-ssal" value="40000"></div></div>`;
+  openModal();
+}
+
+async function deleteStaffAction(id) {
+  if(!confirm('Remove this staff member?')) return;
+  if(USE_BACKEND){try{await apiDelete('/staff/'+id);}catch(e){toast('Error','danger');return;}}
+  else{demo.staff=demo.staff.filter(s=>s.person_id!==id);}
+  renderStaff(); toast('Staff removed','danger');
+}
+
+// ============================================================
+// MODAL SUBMIT
+// ============================================================
+async function submitModal() {
+  const btn = document.getElementById('modal-save-btn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving...';
+  try {
+    if(currentModal==='add-room') {
+      const num=document.getElementById('m-rnum').value.trim();
+      if(!num){toast('Enter room number','danger');return;}
+      const body={room_number:num,floor_number:+document.getElementById('m-rfloor').value,class_name:document.getElementById('m-rclass').value,status:document.getElementById('m-rstatus').value,view_type:document.getElementById('m-rview').value,nightly_rate:+document.getElementById('m-rprice').value,smoking:document.getElementById('m-rsmoke').checked,wheelchair_access:document.getElementById('m-rwheel').checked};
+      if(USE_BACKEND){await apiPost('/rooms',body);}
+      else{demo.rooms.push({...body,room_id:nextDemoId.room++});}
+      closeModal(); renderRooms(); toast('Room added');
+    } else if(currentModal==='add-guest') {
+      const name=document.getElementById('m-gname').value.trim();
+      if(!name){toast('Enter guest name','danger');return;}
+      const body={name,email:document.getElementById('m-gemail').value,city:document.getElementById('m-gcity').value,guest_type:document.getElementById('m-gtype').value};
+      if(USE_BACKEND){await apiPost('/guests',body);}
+      else{demo.guests.push({...body,person_id:nextDemoId.guest++,loyalty_points:0});}
+      closeModal(); renderGuests(); toast('Guest added');
+    } else if(currentModal==='add-booking') {
+      const gid=+document.getElementById('m-bgid').value;
+      const cls=document.getElementById('m-bclass').value;
+      const cin=document.getElementById('m-bcin').value;
+      const cout=document.getElementById('m-bcout').value;
+      if(!cin||!cout){toast('Enter dates','danger');return;}
+      const body={guest_id:gid,room_class:cls,checkin_date:cin,checkout_date:cout,num_adults:+document.getElementById('m-badults').value,num_children:0};
+      if(USE_BACKEND){await apiPost('/bookings',body);}
+      else{const priceMap={Standard:5000,Deluxe:8000,Suite:15000,Executive:12000};const nights=Math.max(1,Math.round((new Date(cout)-new Date(cin))/86400000));const total=priceMap[cls]*nights;const gname=(demo.guests.find(g=>g.person_id===gid)||{name:'Guest'}).name;demo.bookings.push({booking_id:nextDemoId.booking++,guest_name:gname,guest_type:'Regular',booking_date:new Date().toISOString().slice(0,10),checkin_date:cin,checkout_date:cout,room_class:cls,num_adults:body.num_adults,num_children:0,booking_status:'Confirmed',total_amount:total,amount_paid:0,invoice_id:nextDemoId.booking,invoice_status:'Unpaid',nights_stayed:nights});}
+      closeModal(); renderBookings(); toast('Booking created');
+    } else if(currentModal==='add-payment') {
+      const amount=+document.getElementById('m-pamount').value;
+      if(!amount||amount<=0){toast('Enter valid amount','danger');return;}
+      const inv_id=+document.getElementById('m-pinvid').value;
+      const method=document.getElementById('m-pmethod').value;
+      if(USE_BACKEND){await apiPost('/payments',{invoice_id:inv_id,amount,payment_method:method});}
+      else{const bk=demo.bookings.find(b=>b.invoice_id===inv_id);const gname=bk?bk.guest_name:'Guest';demo.payments.push({payment_id:nextDemoId.payment++,guest_name:gname,payment_date:new Date().toISOString().slice(0,10),amount,payment_method:method,status:'Completed',invoice_id:inv_id});}
+      closeModal(); renderPayments(); toast('Payment recorded');
+    } else if(currentModal==='add-staff') {
+      const name=document.getElementById('m-sname').value.trim();
+      if(!name){toast('Enter staff name','danger');return;}
+      const body={name,email:document.getElementById('m-semail').value,position:document.getElementById('m-spos').value,salary:+document.getElementById('m-ssal').value};
+      if(USE_BACKEND){await apiPost('/staff',body);}
+      else{demo.staff.push({...body,person_id:nextDemoId.staff++,hire_date:new Date().toISOString().slice(0,10)});}
+      closeModal(); renderStaff(); toast('Staff added');
+    }
+  } catch(e) {
+    toast('Error: '+e.message,'danger');
+  } finally {
+    btn.disabled=false; btn.innerHTML='<i class="ti ti-check"></i> Save';
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function statusBadge(s) {
+  const map={'Available':'available','Occupied':'occupied','Reserved':'reserved','Under Maintenance':'maintenance','Checked-In':'checkedin','Checked-Out':'checkedout','Confirmed':'confirmed','Paid':'paid','Unpaid':'unpaid','Partially Paid':'confirmed','VIP':'vip','Regular':'regular'};
+  return `<span class="badge badge-${map[s]||'maintenance'}">${s}</span>`;
+}
+function openModal(){document.getElementById('modal-overlay').classList.add('open');}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.className='toast'+(type?' '+type:'');
+  t.innerHTML=`<i class="ti ti-${type==='danger'?'x':'check'}"></i> <span>${msg}</span>`;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+const savedTheme = localStorage.getItem('hms-theme') || 'dark';
+document.body.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-PK',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+detectBackend().then(()=>renderDashboard());
+</script>
+</body>
+</html>
